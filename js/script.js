@@ -110,6 +110,7 @@ function sqrt(a) {
     return Math.sqrt(a)
 }
 
+
 buttons.map((button) => {
     button.addEventListener("click", (e) => {
         switch (e.target.innerText) {
@@ -127,10 +128,12 @@ buttons.map((button) => {
                 }
                 break;
             case "+/-":
-                display.innerText = "-";
+                let pas = display.innerText * -1;
+                display.innerText = (pas)
                 break;
             case "√":
                 display.innerHTML = sqrt(display.innerHTML)
+                break;
             case "%":
                 let passedText = display.innerText + "/100";
                 display.innerText = eval(passedText);
