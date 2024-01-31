@@ -2,7 +2,7 @@ const tabsItem = document.querySelectorAll('.tabsItem');
 const tabsContent = document.querySelectorAll('.tabsContentItem ');
 
 for (let i = 0; i < tabsItem.length; i++) {
-    tabsItem[i].addEventListener('click',function () {
+    tabsItem[i].addEventListener('click', function () {
         for (let j = 0; j < tabsItem.length; j++) {
             tabsItem[j].classList.remove('active')
             tabsContent[j].classList.remove('active')
@@ -32,9 +32,9 @@ function soat() {
 
     hours.innerHTML = time.getHours() < 10 ? '0' + time.getHours() : time.getHours()
     minutes.innerHTML = time.getMinutes() < 10 ? '0' + time.getMinutes() : time.getMinutes()
-    setTimeout(()=>{
+    setTimeout(() => {
         soat()
-    },1000)
+    }, 1000)
 
 }
 soat()
@@ -44,7 +44,7 @@ soat()
 // sekundnomer
 
 document.addEventListener("DOMContentLoaded", function () {
-    
+
     var stopwatchBtn = document.querySelector('.stopwatch__btn');
     var stopwatchClock = document.querySelector('.stopwatch__clock');
     var stopwatchAudio = document.querySelector('.stopwatch__audio');
@@ -55,11 +55,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     stopwatchBtn.addEventListener('click', function () {
         if (isRunning) {
-           
+
             clearInterval(interval);
             isRunning = false;
         } else {
-      
+
             interval = setInterval(function () {
                 updateStopwatch();
             }, 1000);
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    
+
     function updateStopwatch() {
         var secondsElement = document.querySelector('.stopwatch__seconds');
         var minutesElement = document.querySelector('.stopwatch__minutes');
@@ -93,10 +93,55 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-      
+
         secondsElement.textContent = seconds < 10 ? '0' + seconds : seconds;
         minutesElement.textContent = minutes < 10 ? '0' + minutes : minutes;
         hoursElement.textContent = hours < 10 ? '0' + hours : hours;
     }
+});
+
+// Calculator
+
+let display = document.querySelector(".calc__screen-out");
+
+let buttons = Array.from(document.querySelectorAll(".calc__btn"));
+
+function sqrt(a) {
+    return Math.sqrt(a)
+}
+
+buttons.map((button) => {
+    button.addEventListener("click", (e) => {
+        switch (e.target.innerText) {
+            case "ce":
+                display.innerText = display.innerText.slice(0, -1);
+                break;
+            case "ac":
+                display.innerText = "0";
+                break;
+            case "=":
+                try {
+                    display.innerText = eval(display.innerText);
+                } catch (e) {
+                    display.innerText = "Error!";
+                }
+                break;
+            case "+/-":
+                display.innerText = "-";
+                break;
+            case "√":
+                display.innerHTML = sqrt(display.innerHTML)
+            case "%":
+                let passedText = display.innerText + "/100";
+                display.innerText = eval(passedText);
+                break;
+            default:
+                if (display.innerText === "0" && e.target.innerText !== ".") {
+                    display.innerText = e.target.innerText;
+                } else {
+                    display.innerText += e.target.innerText;
+                }
+        }
+    });
 });
 
