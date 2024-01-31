@@ -41,64 +41,55 @@ soat()
 
 
 
-// sekundnomer
+// sekundomer
 
-document.addEventListener("DOMContentLoaded", function () {
+let stopwatchSecond = document.querySelector(".stopwatch__seconds");
+let stopwatchMinute = document.querySelector(".stopwatch__minutes");
+let stopwatchHour = document.querySelector(".stopwatch__hours");
+let stopwatchBtn = document.querySelector(".stopwatch__btn");
+let stopwatchLight = document.querySelector(".tabsLink__span");
+let stopwatchAudio = document.querySelector(".stopwatch__audio");
 
-    var stopwatchBtn = document.querySelector('.stopwatch__btn');
-    var stopwatchClock = document.querySelector('.stopwatch__clock');
-    var stopwatchAudio = document.querySelector('.stopwatch__audio');
-
-    var isRunning = false;
-    var interval;
-
-
-    stopwatchBtn.addEventListener('click', function () {
-        if (isRunning) {
-
-            clearInterval(interval);
-            isRunning = false;
-        } else {
-
-            interval = setInterval(function () {
-                updateStopwatch();
-            }, 1000);
-            isRunning = true;
-        }
-    });
-
-
-    function updateStopwatch() {
-        var secondsElement = document.querySelector('.stopwatch__seconds');
-        var minutesElement = document.querySelector('.stopwatch__minutes');
-        var hoursElement = document.querySelector('.stopwatch__hours');
-
-        var seconds = parseInt(secondsElement.textContent);
-        var minutes = parseInt(minutesElement.textContent);
-        var hours = parseInt(hoursElement.textContent);
-
-        seconds++;
-
-        if (seconds === 60) {
-            seconds = 0;
-            minutes++;
-
-            if (minutes === 60) {
-                minutes = 0;
-                hours++;
-
-                if (hours === 24) {
-                    hours = 0;
-                }
-            }
-        }
-
-
-        secondsElement.textContent = seconds < 10 ? '0' + seconds : seconds;
-        minutesElement.textContent = minutes < 10 ? '0' + minutes : minutes;
-        hoursElement.textContent = hours < 10 ? '0' + hours : hours;
-    }
+stopwatchBtn.addEventListener("click", function () {
+  if (this.innerHTML.toLowerCase() == "start") {
+    this.innerHTML = "STOP";
+    stopwatchLight.classList.add("active");
+    interval = setInterval(() => {
+      stopwatch();
+    }, 1000);
+  } else if (this.innerHTML.toLowerCase() == "stop") {
+    this.innerHTML = "CLEAR";
+    stopwatchLight.classList.remove("active");
+    stopwatchLight.classList.add("active_clear");
+    clearInterval(interval);
+  } else if (this.innerHTML.toLowerCase() == "clear") {
+    this.innerHTML = "START";
+    stopwatchLight.classList.remove("active_clear");
+    stopwatchCount = 0;
+    stopwatchSecond.innerHTML = 0;
+    stopwatchMinute.innerHTML = 0;
+    stopwatchHour.innerHTML = 0;
+  }
 });
+
+let stopwatchCount = 0;
+
+function stopwatch() {
+  stopwatchAudio.play();
+  stopwatchCount++;
+  if (stopwatchCount < 60) {
+    stopwatchSecond.innerHTML = stopwatchCount;
+  }
+  if (stopwatchCount > 59) {
+    stopwatchMinute.innerHTML++;
+    stopwatchCount = 0;
+    stopwatchSecond.innerHTML = stopwatchCount;
+  }
+  if (stopwatchMinute.innerHTML > 59) {
+    stopwatchHour.innerHTML++;
+    stopwatchMinute.innerHTML = 0;
+  }
+}
 
 // Calculator
 
@@ -147,4 +138,89 @@ buttons.map((button) => {
         }
     });
 });
+
+// timer
+
+let timerHour = document.querySelector(".timer__hours");
+let timerMinute = document.querySelector(".timer__minutes");
+let timerSecond = document.querySelector(".timer__seconds");
+let timerPlay = document.querySelector(".timer__set");
+let timerClear = document.querySelector(".timer__clear");
+let timerBtns = document.querySelectorAll(
+  ".timer__btn, .timer__set, .timer__clear"
+);
+let timerAudio = document.querySelector(".timer__audio");
+
+for (let i = 0; i < timerBtns.length; i++) {
+  timerBtns[i].addEventListener("click", function () {
+    timerBtn(this.innerHTML);
+  });
+}
+
+function timerBtn(el) {
+  if (el.toLowerCase() == "play") {
+    timerPlay.innerHTML = "PAUSE";
+    interval = setInterval(() => {
+      timer();
+    }, 1000);
+  } else if (el.toLowerCase() == "pause") {
+    timerPlay.innerHTML = "PLAY";
+    clearInterval(interval);
+    timerAudio.pause()
+  } else if (el.toLowerCase() == "clear") {
+    timerHour.innerHTML = "";
+    timerMinute.innerHTML = "";
+    timerSecond.innerHTML = "";
+    timerPlay.innerHTML = "PLAY";
+    clearInterval(interval);
+    timerAudio.pause()
+    timerCount = 0;
+  } else {
+    if (timerSecond.innerHTML.length < 2) {
+      let check = (timerSecond.innerHTML += el);
+      checkCount(check);
+    } else if (
+      timerSecond.innerHTML.length >= 2 &&
+      timerMinute.innerHTML.length < 2
+    ) {
+      timerMinute.innerHTML += el;
+    } else if (
+      timerMinute.innerHTML.length >= 2 &&
+      timerHour.innerHTML.length < 2
+    ) {
+      timerHour.innerHTML += el;
+    }
+  }
+}
+
+let timerCount = 0;
+function checkCount(check) {
+  timerCount = check;
+}
+
+function timer() {
+  if (timerCount > 0) {
+    timerCount--;
+    timerSecond.innerHTML = timerCount;
+  } else if (timerCount == 0) {
+    if (timerMinute.innerHTML > 0) {
+      timerMinute.innerHTML--;
+      timerCount = 59;
+      timerSecond.innerHTML = timerCount;
+    } else {
+      if (timerHour.innerHTML > 0) {
+        timerHour.innerHTML--;
+        timerMinute.innerHTML = 59;
+        timerCount = 59;
+        timerSecond.innerHTML = timerCount;
+      } else {
+        timerHour.innerHTML = "";
+        timerMinute.innerHTML = "";
+        timerSecond.innerHTML = "";
+        timerAudio.play()
+      }
+    }
+  }
+}
+
 
